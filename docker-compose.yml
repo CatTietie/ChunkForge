@@ -1,0 +1,112 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_data:/data/metadata
+    environment:
+      - METADATA_PERSIST_DIR=/data/metadata
+      - HEARTBEAT_INTERVAL_MS=1000
+      - HEARTBEAT_TIMEOUT_MS=3000
+      - REPAIR_CONCURRENCY=4
+
+  node-0:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-0
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node0_data:/data/shards
+    depends_on:
+      - backend
+
+  node-1:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-1
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node1_data:/data/shards
+    depends_on:
+      - backend
+
+  node-2:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-2
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node2_data:/data/shards
+    depends_on:
+      - backend
+
+  node-3:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-3
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node3_data:/data/shards
+    depends_on:
+      - backend
+
+  node-4:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-4
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node4_data:/data/shards
+    depends_on:
+      - backend
+
+  node-5:
+    build:
+      context: ./backend
+      dockerfile: node/Dockerfile
+    environment:
+      - NODE_ID=node-5
+      - NODE_PORT=9000
+      - COORDINATOR_URL=http://backend:8000
+    volumes:
+      - node5_data:/data/shards
+    depends_on:
+      - backend
+
+volumes:
+  backend_data:
+  node0_data:
+  node1_data:
+  node2_data:
+  node3_data:
+  node4_data:
+  node5_data:
+
+networks:
+  default:
+    name: chunkforge_net
